@@ -15,6 +15,7 @@ namespace CodeFormatter
     {
         Format,
         ListRules,
+        ShowHelp
     }
 
     public sealed class CommandLineOptions
@@ -29,6 +30,18 @@ namespace CodeFormatter
             null,
             allowTables: false,
             verbose: false);
+
+        public static readonly CommandLineOptions ShowHelp = new CommandLineOptions(
+            Operation.ShowHelp,
+            ImmutableArray<string[]>.Empty,
+            ImmutableArray<string>.Empty,
+            ImmutableDictionary<string, bool>.Empty,
+            ImmutableArray<string>.Empty,
+            ImmutableArray<string>.Empty,
+            null,
+            allowTables: false,
+            verbose: false);
+
 
         public readonly Operation Operation;
         public readonly ImmutableArray<string[]> PreprocessorConfigurations;
@@ -142,6 +155,7 @@ namespace CodeFormatter
     /rule(+|-)   - Enable (default) or disable the specified rule
     /rules       - List the available rules
     /verbose     - Verbose output
+    /help        - Displays this usage message (short form: /?)
 ";
 
         public static void PrintUsage()
@@ -233,6 +247,10 @@ namespace CodeFormatter
                 else if (comparer.Equals(arg, "/rules"))
                 {
                     return CommandLineParseResult.CreateSuccess(CommandLineOptions.ListRules);
+                }
+                else if (comparer.Equals(arg, "/?") || comparer.Equals(arg, "/help"))
+                {
+                    return CommandLineParseResult.CreateSuccess(CommandLineOptions.ShowHelp);
                 }
                 else if (arg.StartsWith("/", comparison))
                 {
