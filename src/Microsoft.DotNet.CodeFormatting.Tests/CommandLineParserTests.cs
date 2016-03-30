@@ -17,6 +17,15 @@ namespace Microsoft.DotNet.CodeFormatting.Tests
             return options;
         }
 
+        private CommandLineOptions FailToParse(params string[] args)
+        {
+            CommandLineOptions options;
+            Assert.False(CommandLineParser.TryParse(args, out options));
+            Assert.Null(options);
+
+            return options;
+        }
+
         [Fact]
         public void Rules()
         {
@@ -89,6 +98,24 @@ namespace Microsoft.DotNet.CodeFormatting.Tests
             var options = Parse("/nocopyright", "test.csproj");
             Assert.False(options.RuleMap[FormattingDefaults.CopyrightRuleName]);
             Assert.Equal(new[] { "test.csproj" }, options.FormatTargets);
+        }
+
+        [Fact]
+        public void SingleUnrecognizedOption()
+        {
+            FailToParse("/unrecognized");
+        }
+
+        [Fact]
+        public void UnrecognizedOptionWithFormatTarget()
+        {
+            FailToParse("test.csproj", "/unrecognized");
+        }
+
+        [Fact]
+        public void UnrecognizedOptionWithOtherwiseValidArguments()
+        {
+            FailToParse("test.csproj", "/nocopyright", "/unrecognized");
         }
     }
 }

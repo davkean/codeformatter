@@ -234,6 +234,10 @@ namespace CodeFormatter
                 {
                     return CommandLineParseResult.CreateSuccess(CommandLineOptions.ListRules);
                 }
+                else if (arg.StartsWith("/", comparison))
+                {
+                    return CommandLineParseResult.CreateError($"Unrecognized option \"{arg}\"");
+                }
                 else
                 {
                     formatTargets.Add(arg);
